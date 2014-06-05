@@ -25,7 +25,6 @@
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="#">Home</a></li>
-                    <li class="active"><a href="#about">Learn</a></li>
                     <li><a href="#contact">Story</a></li>
                 </ul>
             </div>
@@ -36,10 +35,73 @@
         <div class="row">
             <div class="col-md-12">
                 <div>
-                    spdy协议的使用
+                    <h3>spdy协议的使用</h3>
                 </div>
                 <div>
-                    最近我们项目开始使用spdy,我们主要使用的是应用OKHTTP.
+                    最近我们项目开始使用spdy,协议底层是<a href="http://square.github.io/okhttp/" target="_blank">OKHTTP</a>.
+                    下面结合一些我们使用过程中的心得来谈谈spdy的使用。
+                </div>
+                <div>
+                    <h3>SPDY协议简介</h3>
+                    <div>
+                        <a href="http://tech.weibo.com/?p=1268" target="_blank">SPDY协议粗解</a> <br/>
+                        <a href="http://blog.csdn.net/marcky/article/details/7728662" target="_blank">google SPDY介绍</a> <br/>
+                        <a href="http://dev.chromium.org/spdy/spdy-whitepaper">SPDY白皮书</a>
+                    </div>
+                </div>
+                <div>
+                    <h3>SPDY使用的问题</h3>
+                    <div>
+                        <h4>使用场景</h4>
+                        <div>
+                            <div>
+                                如同上面介绍过，SPDY是在一条TCP通道上并发请求来加快网络的速度。大家肯定会想到KEEP-ALIVE同样可以减少TCP的握手
+                                时间来加快网络的传输速度。那使用SPDY为什么会加快网络速度呢？在具体的使用过程当中，我们发现在网络请求数很少的时候
+                                （比如低于5个请求时，SPDY的速度不及KEEP-ALIVE的速度），当并发数上去之后，SPDY的优势就比较明显了。所以SPDY不是一剂
+                                万能的药，能够有效的加快网络的传输。需要根据具体的环境加以使用。下面总结一下SPDY协议的使用：
+                            </div>
+                            <div>
+                                <ul>
+                                    <li>
+                                        2G网络
+                                        <div>
+                                           2G网络由于网络带宽小，多个网络请求并发反而会拖慢整体的速度，这个时候可以关掉spdy，网络请求串行化
+                                        </div>
+                                    </li>
+                                    <li>
+                                        3G网络和wifi网络
+                                        <div>
+                                           3G网络和wifi网络就要看你的并发数了,如果并发数不高，就请求几个文件，完全没有太大的必要使用SPDY协议，
+                                           使用SPDY协议之后可能会有协议上的错误。而如果并发数很高，SPDY的收益还是比较好的，而且由于并发的特性，几个文件几乎可以同时完成任务的下载，
+                                           对于图片下载这种体验还是很好的。
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+
+                        <h4>可能碰到的问题</h4>
+                        <div>
+                            <ul>
+                                <li>
+                                    单通道是一把双刃剑
+                                    <div>
+                                       由于大家都是共用同一个通道，极端的情况下，3个请求同时发出，第一个请求建立通道速度很慢，第二个和第三个请求会等待第一个完成通道的建立。
+                                       于是悲剧发生了。所以切忌要设置合理的超时。
+                                    </div>
+                                </li>
+                                <li>
+                                   并行是一把双刃剑
+                                   <div>
+                                       并行同样是一把双刃剑，大家同时在一条通路上下载，总体的速度加快了，但是单个的下载速度不一定能得到提升。所以要根据使用场景来选择是否使用SPDY。
+                                   </div>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                    </div>
                 </div>
             </div>
         </div>

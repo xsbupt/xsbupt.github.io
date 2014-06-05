@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>xs</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="public/my.css">
+
+</head>
+
+<body data-spy="scroll" data-target="#myScrollspy">
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">XS</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#">Home</a></li>
+                <li><a href="#about">Learn</a></li>
+                <li class="active"><a href="#contact">Story</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="content" class="container" style="margin-top: 60px">
+    <div class="row">
+        <div class="col-md-12">
+            <div>
+               <h3>一.简介</h3>
+               <div>
+                   picasso是Square公司开源的Android图形缓存库，地址http://square.github.io/picasso/，可以实现图片下载和缓存功能。
+                   Picasso主要由以下特性：
+                   <ul>
+                     <li>1. 在adapter中回收和取消当前的下载；</li>
+                     <li>2. 非常简洁的对图片进行变换（如更改尺寸等、旋转等），同时提供了接口便于扩展；</li>
+                     <li>3. 提供了多种获取图片资源的方法（如网络，本地磁盘等），同样也预留了扩展接口；</li>
+                     <li>4. 网络图片下载模块采用了高效的OKhttp（https://github.com/square/okhttp）进行下载</li>
+                   </ul>
+               </div>
+
+               <h3>二、类的介绍</h3>
+               <div>
+                   <h4>2.1 BitmapHunter抽象类</h4>
+                   <img src="img/hunter.png">
+                   <div>
+                       这个类是任务执行类，负责最耗时的图片的加载、转换、数据解析等操作。这个类是一个Runnable类，在run方法里实现各种耗时操作。其中的NetWorkBitMapHunter类实现网络图片的下载功能，它采用高效的OKhttp（https://github.com/square/okhttp）来实现图片的下载功能。
+                   </div>
+
+                   <h4>2.2 Dispatcher任务调度类</h4>
+                   <div>
+                       这个类是各种的消息传递类，主要包括任务的提交、取消、任务的完成、重试和失败的信息传递，通过内部的Handle，来传递各种消息。DispatchSubmit(action)是任务的开始，dispatchComplete(hunter)是任务的完成，dispatchRetry(BitmapHunter)是任务重试,dispatchFailed(BitmapHunter)是任务失败操作,DispatchCancel(action)任务的取消任务。
+                   </div>
+
+                   <h4>2.3 request类</h4>
+                   <div>
+                       请求及操作类，图形下载完毕之后，对图片的后续操作会在这里进行，如对图片进行缩放，旋转等。
+                   </div>
+
+                   <h4>2.4 action抽象类</h4>
+                   <img src="img/action.png">
+                   <div>
+                       Action类是图片完成之后的最后加载类，有两个抽象方法，complete和error，是图片加载的最后一个步骤。如将下载完成的bitmap渲染到Imagev上。
+                   </div>
+
+                   <h4>2.5 Transformation接口</h4>
+                   <img src="img/Transformation.png">
+                   <div>
+                       图形转换接口，如果需要自定义图形变换，只需要实现该接口，并传入即可。
+                   </div>
+
+                   <h4>2.6 cache接口</h4>
+                   <img src="img/cache.png">
+                   <div>
+                       数据缓存接口，LruCache是采用LRU算法实现的图片缓存类。
+                   </div>
+
+                   <h4>2.7 action抽象类</h4>
+                   <img src="img/action.png">
+                   <div>
+                       <div>
+                          调用实例：Picasso.with(context).load(url).resize(50, 50).centerCrop().into(imageView)
+                       </div>
+
+                       <div>
+                          我们根据这个函数的调用来看一遍流程，with函数调用会创建一个图片下载所需要的各种元素，如cache缓存，任务调度Dispather类，线程执行类executorService，在调用load()时会创建图片处理request类，稍后的resize()、centerCrop()、各种Transformation实现类这些图片操作类将会绑定到request类中，在图片完成load之后进行后续的操作；最后的into()函数调用会创建图片下载或者加载类BitMapHunter，图片加载类action；最后通过调用dispatcher类启动任务的进行。
+                       </div>
+
+                   </div>
+
+
+
+               </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
